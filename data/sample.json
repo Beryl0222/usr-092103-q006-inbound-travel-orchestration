@@ -1,0 +1,9 @@
+{
+  "event_id": "092103-006-sample-001",
+  "event_type": "IDENTITY_VERIFIED",
+  "aggregate_type": "traveler_session",
+  "aggregate_id": "inbound_travel_orchestration-001",
+  "occurred_at": "2026-09-20T16:00:00+08:00",
+  "version": 1,
+  "summary": "入境游服务编排联调样例"
+}
