@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "入境游服务编排领域事件",
+  "description": "所有跨服务交换都以此信封为消息边界。新增字段均为可选，旧消息可被新解析器读取；新增枚举值只追加、不复用、不改写。",
   "type": "object",
   "required": [
     "event_id",
@@ -23,7 +24,32 @@
         "SERVICE_AUTHORIZED",
         "RESERVATION_CONFIRMED",
         "COMPENSATION_STARTED",
-        "ITINERARY_UPDATED"
+        "ITINERARY_UPDATED",
+        "IDENTITY_ASSERTION_ISSUED",
+        "IDENTITY_ASSERTION_REVOKED",
+        "AUTHORIZATION_REVOKED",
+        "RESERVATION_HELD",
+        "RESERVATION_RELEASED",
+        "CREDENTIAL_ROTATED",
+        "ITINERARY_PROPOSED",
+        "ITINERARY_CONFIRMED",
+        "PAYMENT_INITIATED",
+        "PAYMENT_CAPTURED",
+        "PAYMENT_REFUNDED",
+        "PAYMENT_FAILED",
+        "CALLBACK_DEDUPED",
+        "STEP_STARTED",
+        "STEP_SUCCEEDED",
+        "STEP_FAILED",
+        "COMPENSATION_RESUMED",
+        "COMPENSATION_COMPLETED",
+        "TOPUP_REQUESTED",
+        "TOPUP_COMPLETED",
+        "TRANSLATION_REQUESTED",
+        "TRANSLATION_CORRECTED",
+        "TAXFREE_DOCUMENT_COLLECTED",
+        "DATA_RETENTION_EXPIRED",
+        "DATA_PURGED"
       ]
     },
     "aggregate_type": {
@@ -32,7 +58,13 @@
         "traveler_session",
         "service_authorization",
         "itinerary_revision",
-        "orchestration_step"
+        "orchestration_step",
+        "identity_assertion",
+        "reservation",
+        "payment",
+        "translation_request",
+        "tax_refund_pack",
+        "credential"
       ]
     },
     "aggregate_id": {
@@ -50,6 +82,62 @@
     "summary": {
       "type": "string",
       "minLength": 1
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "跨服务故障追踪标识，贯穿同一会话/同一编排的全部消息，不含身份内容。"
+    },
+    "causation_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "触发本事件的上游事件或回调标识，用于重复回调识别。"
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1,
+      "description": "外部方提供的幂等键；同键重复消息只能得到同一结果。"
+    },
+    "service_provider": {
+      "type": "string",
+      "description": "实际处理该步骤的服务方标识，供游客查看“由谁处理”。",
+      "enum": [
+        "border_check",
+        "hotel",
+        "payment_network",
+        "transport",
+        "attraction",
+        "translation",
+        "tax_refund",
+        "orchestrator"
+      ]
+    },
+    "payload": {
+      "type": "object",
+      "description": "事件负载。护照号、姓名原件等敏感字段不得直接出现在这里，只能以密封件引用 sealed_ref 表达。",
+      "properties": {
+        "session_id": { "type": "string", "minLength": 1 },
+        "service": { "type": "string" },
+        "purposes": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "assertion_scopes": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "sealed_ref": { "type": "string" },
+        "reservation_id": { "type": "string" },
+        "payment_id": { "type": "string" },
+        "revision_no": { "type": "integer", "minimum": 1 },
+        "anchors_frozen": { "type": "boolean" },
+        "credential_id": { "type": "string" },
+        "superseded_credential_id": { "type": "string" },
+        "retained": { "type": "boolean" },
+        "legal_hold": { "type": "boolean" },
+        "retention_class": { "type": "string" }
+      },
+      "additionalProperties": true
     }
   },
   "additionalProperties": true

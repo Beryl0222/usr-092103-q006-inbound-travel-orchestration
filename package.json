@@ -3,8 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "领域事件基础校验",
+  "description": "省级入境游服务编排后端：领域事件、最小身份断言、行程版本、幂等支付与可恢复补偿",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "typecheck": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
   }
 }
