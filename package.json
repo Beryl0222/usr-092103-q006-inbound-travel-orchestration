@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "领域事件基础校验",
+  "description": "入境游服务编排后端：身份断言、授权、行程版本、预订占用、支付、翻译、退税与可恢复 Saga",
   "scripts": {
     "test": "node --test"
   }

@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "入境游服务编排领域事件",
+  "description": "跨服务消息边界。信封字段对所有事件强制；事件专有负载放在 payload 中。已登记的枚举只可追加，不可改写既有取值。",
   "type": "object",
   "required": [
     "event_id",
@@ -19,19 +20,55 @@
     "event_type": {
       "type": "string",
       "enum": [
+        "SESSION_OPENED",
         "IDENTITY_VERIFIED",
+        "IDENTITY_ASSERTION_ISSUED",
+        "PASSPORT_ACCESS_GRANTED",
+        "PASSPORT_ACCESSED",
         "SERVICE_AUTHORIZED",
+        "AUTHORIZATION_REVOKED",
+        "ITINERARY_PROPOSED",
+        "ITINERARY_REJECTED",
+        "ITINERARY_UPDATED",
+        "RESERVATION_REQUESTED",
         "RESERVATION_CONFIRMED",
+        "RESERVATION_REJECTED",
+        "RESERVATION_CANCELLED",
+        "RESERVATION_OFFER_EXPIRED",
+        "VOUCHER_ISSUED",
+        "VOUCHER_REVOKED",
+        "PAYMENT_INITIATED",
+        "PAYMENT_SUCCEEDED",
+        "PAYMENT_FAILED",
+        "PAYMENT_REFUNDED",
+        "TRANSLATION_SUBMITTED",
+        "TRANSLATION_COMPLETED",
+        "TRANSLATION_CORRECTED",
+        "TAX_REFUND_DOCUMENT_PREPARED",
+        "STEP_ENQUEUED",
+        "STEP_STARTED",
+        "STEP_SUCCEEDED",
+        "STEP_FAILED",
+        "STEP_SUSPENDED",
+        "STEP_RESUMED",
         "COMPENSATION_STARTED",
-        "ITINERARY_UPDATED"
+        "COMPENSATION_COMPLETED",
+        "STEP_RETRY_SCHEDULED",
+        "LEGAL_RECORD_HELD",
+        "RETENTION_PURGED"
       ]
     },
     "aggregate_type": {
       "type": "string",
       "enum": [
         "traveler_session",
+        "identity_vault",
         "service_authorization",
         "itinerary_revision",
+        "reservation",
+        "payment",
+        "translation_request",
+        "tax_refund_case",
         "orchestration_step"
       ]
     },
@@ -50,6 +87,18 @@
     "summary": {
       "type": "string",
       "minLength": 1
+    },
+    "payload": {
+      "type": "object",
+      "description": "事件专有负载。敏感字段不得直接放入 summary。"
+    },
+    "causation_id": {
+      "type": "string",
+      "description": "触发本事件的上游事件或回调编号，用于链路追踪。"
+    },
+    "correlation_id": {
+      "type": "string",
+      "description": "旅客会话或编排链编号，运维侧据此串联跨服务故障。"
     }
   },
   "additionalProperties": true
